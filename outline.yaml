@@ -1,0 +1,112 @@
+# 调研大纲：AI 驱动的内容采集插件管理平台
+topic: AI 驱动的内容采集插件管理平台（PHP + Vue + MySQL）
+topic_slug: ai-crawler-plugin-platform
+created: 2026-07-21
+focus: 竞品与行业分析（兼顾插件系统 / 爬虫 / AI 接入的技术参考）
+time_range: 不限
+
+# 调研对象（items）
+# 说明：A 类为竞品/参考平台（核心），B 类为技术架构参考（辅助）
+items:
+  # ---- A. 竞品与参考平台 ----
+  - id: A01
+    name: Apify
+    category: 竞品/参考平台
+    note: 网页抓取与自动化平台，Actor 市场（插件上架 + 开发者分成对标）
+  - id: A02
+    name: Firecrawl
+    category: 竞品/参考平台
+    note: AI 友好的抓取 API（credit 计费，2024 成立）
+  - id: A03
+    name: Crawl4AI
+    category: 竞品/参考平台
+    note: 开源 LLM 爬虫，LLM-ready 输出（Markdown/结构化）
+  - id: A04
+    name: Bright Data（原 Luminati）
+    category: 竞品/参考平台
+    note: 全球代理网络 + 抓取 API，合规（robots/授权/GDPR）标杆
+  - id: A05
+    name: Diffbot
+    category: 竞品/参考平台
+    note: AI 自动结构化提取 API（auto-extract），无需写规则
+  - id: A06
+    name: PhantomBuster
+    category: 竞品/参考平台
+    note: 云端 Phantoms 脚本分享市场（插件分发直接对标，2017）
+  - id: A07
+    name: Browse AI
+    category: 竞品/参考平台
+    note: 无代码可视化抓取 + 监控/定时（轻量看日志体验对标）
+  - id: A08
+    name: n8n
+    category: 竞品/参考平台
+    note: 可视化工作流，节点即插件（私有化自托管产品形态）
+  - id: A09
+    name: Dify
+    category: 竞品/参考平台
+    note: LLM 应用开发平台，工具/插件集成，支持 GLM/DeepSeek/OpenAI 兼容
+  - id: A10
+    name: Coze（扣子）
+    category: 竞品/参考平台
+    note: 字节 Bot 平台，零代码 + 插件市场分发（2024）
+  - id: A11
+    name: FastGPT（国内开源）
+    category: 竞品/参考平台
+    note: 工具/函数/workflow + 知识库，支持在线调试（模型管理对标）
+  - id: A12
+    name: Flowise / Langflow
+    category: 竞品/参考平台
+    note: 可视化 LLM 编排，节点拼装 = 插件组合
+  - id: A13
+    name: 八爪鱼采集器
+    category: 竞品/参考平台
+    note: 可视化爬虫（国内对标），AI 辅助识别页面结构
+  - id: A14
+    name: 火车头采集器 LocoySpider
+    category: 竞品/参考平台
+    note: 国内老牌桌面采集器（2005 起），采集→发布 CMS 范式
+  - id: A15
+    name: WordPress 插件生态
+    category: 竞品/参考平台
+    note: 6 万+ 插件、语义化版本、审核机制成熟范式
+  - id: A16
+    name: Packagist / Composer
+    category: 竞品/参考平台
+    note: PHP 包与版本管理事实标准（版本/上架参考）
+  - id: A17
+    name: MCP 生态（Anthropic / Linux Foundation）
+    category: 竞品/参考平台
+    note: AI 工具调用统一标准（3000+ Server），建议插件接口对齐
+
+  # ---- B. 技术架构参考（辅助） ----
+  - id: B01
+    name: PHP 框架选型（Laravel / ThinkPHP / Symfony）
+    category: 技术架构参考
+    note: 后端底座选型，影响插件机制实现成本
+  - id: B02
+    name: 插件系统架构（钩子 / 事件 / 沙箱隔离）
+    category: 技术架构参考
+    note: 用户可上传/安装插件的安全与扩展前提
+  - id: B03
+    name: PHP 网页爬虫（Guzzle + DomCrawler + 无头浏览器）
+    category: 技术架构参考
+    note: "插件=按网站爬取内容与链接"的落地方式
+  - id: B04
+    name: Cookie / 登录态管理
+    category: 技术架构参考
+    note: 插件参数含登录 Cookie、失效日期
+  - id: B05
+    name: 多模型 API 接入（GLM / DeepSeek / OpenAI 兼容）
+    category: 技术架构参考
+    note: 模型管理 + 在线测试按钮的协议层
+  - id: B06
+    name: Vue3 前后端分离 + 实时日志（WebSocket）
+    category: 技术架构参考
+    note: 用户流程"运行 → 右侧看日志"的实现
+
+# 执行配置（research-deep 阶段使用）
+execution:
+  batch_size: 4            # 并行搜索代理数量
+  items_per_agent: 3       # 每个代理负责的 item 数
+  output_dir: ./results     # 逐项结果输出目录
+  # 注：深搜将按 A 类（竞品/行业）优先、B 类（技术参考）补充的顺序分批执行

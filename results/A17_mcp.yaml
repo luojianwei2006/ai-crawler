@@ -1,0 +1,27 @@
+item_id: A17
+name: MCP 生态 (Anthropic / Linux Foundation)
+category: 竞品/参考平台
+fields:
+  vendor: Anthropic 开源, 2025-12 捐赠至 Agentic AI Foundation (Linux Foundation 下设, OpenAI/Google/Microsoft 参与)
+  founded: "2024-11-25 开源"
+  type: AI 工具调用开放标准协议
+  open_source: 开放标准 (MIT 风格规范)
+  scale: "3000+ Server, 生态快速增长"
+  crawl_capability: N/A (协议层); 已有 Firecrawl/Playwright/Brave Search 等网页抓取类 MCP Server
+  ai_integration: 核心定位 — 统一 LLM 与外部工具/数据源的调用标准
+  plugin_mechanism: Server 即"插件", 暴露 Tools/Resources/Prompts 三种原语
+  user_auth: Host 控权限与授权; Client 与 Server 1:1 隔离会话
+  backend: 基于 JSON-RPC 的有状态会话协议; 传输层支持 STDIO 与 Streamable HTTP
+  plugin_runtime: Server 可为本地进程或远程服务; 关键原则 Server 互不可见, 跨 Server 交互由 Host 强制隔离
+  extensibility: Host/Client/Server 架构 + capability negotiation; 天然适配插件沙箱与权限边界
+  business_model: N/A (标准/协议)
+  deployment: 本地进程 / 远程服务 均可
+  compliance: 隔离由协议层保证 (Server 不读整段对话, 不窥视其他 Server)
+  sandbox_isolation: 协议级隔离语义 (Host 控边界, Server 互不可见)
+  monitoring_log: N/A
+  takeaway: ① 本平台插件接口直接对齐 MCP (Tools/Resources/Prompts + JSON-RPC), 而非自研封闭协议, 零成本接入主流 Agent 生态; ② 利用 MCP "Server 互不可见、Host 控边界" 做权限沙箱; ③ 复用 Firecrawl/Playwright 类现有抓取 MCP Server 作官方示例插件, 降低开发模板成本
+sources:
+  - https://modelcontextprotocol.io/specification/2025-03-26/architecture
+  - https://www.anthropic.com/news/model-context-protocol
+  - https://www.anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation
+  - https://www.firecrawl.dev/

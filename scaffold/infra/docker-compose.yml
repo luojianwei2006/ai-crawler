@@ -1,0 +1,42 @@
+# 私有化自托管编排（开发者为主 / 私有化部署，见决策 §10-2）
+# 单机单租户 + 手动运行（一期边界）
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: ../infra/Dockerfile
+    ports:
+      - "8000:9000"   # php-fpm；nginx 反代另配
+    volumes:
+      - ./backend:/var/www
+    environment:
+      - APP_ENV=production
+      - DB_HOST=db
+      - DB_DATABASE=ai_crawler
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+      - SANDBOX_PHP_BINARY=/usr/local/bin/php
+      - SANDBOX_MEMORY_LIMIT=256M
+      - SANDBOX_TIMEOUT=300
+      - SANDBOX_DISABLE_FUNCTIONS=exec,shell_exec,system,passthru,proc_open,popen
+      - COMPLIANCE_ROBOTS_ENFORCED=true
+      - COMPLIANCE_MAX_DEPTH=3
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=ai_crawler
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  # 可选：队列（一期 sunc 即可，任务异步化见二期 T2 调优）
+  # redis:
+  #   image: redis:7
+
+volumes:
+  db_data:

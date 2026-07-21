@@ -1,0 +1,16 @@
+item_id: B05
+name: 多模型 API 接入 (GLM / DeepSeek / OpenAI 兼容)
+category: 技术架构参考
+fields:
+  models_supported: GLM 系列(智谱) / DeepSeek / GPT(OpenAI) 等主流模型
+  api_protocol: 三者均提供 OpenAI 兼容接口 (端点 + api_key + model); 仅需改 base_url 与 model 名即可复用 OpenAI SDK(openai-php/laravel)
+  backend: 统一 ChatAdapter 抽象: base_url / api_key / model / stream; 路由到对应厂商
+  business_model: N/A
+  deployment: 经 One-API 等统一网关做 Key 聚合/令牌分发/配额限流/用量统计; model_providers 表存各厂商 key 与余量, 按用户/插件扣减
+  testable: 是 — 测试按钮复用同一 ChatAdapter, 以最小 payload (messages:[{role:user,content:"ping"}], stream:false) 发一次补全请求, 前端展示延迟/返回内容/token 用量/错误码
+  takeaway: 建 ChatAdapter 统一封装 OpenAI 兼容协议; model_providers 表存 GLM/DeepSeek/GPT 的 base_url+key+model+配额; 测试按钮复用同一适配器发最小请求并回显延迟/token/错误
+sources:
+  - https://docs.bigmodel.cn/cn/guide/develop/openai/introduction
+  - https://developer.baidu.com/article/detail.html?id=4402968
+  - https://github.com/songquanpeng/one-api
+  - https://jishuzhan.net/article/2006969295877226498

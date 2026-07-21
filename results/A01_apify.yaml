@@ -1,0 +1,26 @@
+item_id: A01
+name: Apify
+category: 竞品/参考平台
+fields:
+  vendor: Apify (捷克, 欧盟)
+  founded: 2015 (前身 2014)
+  type: SaaS 云 + 开发者平台
+  open_source: 商业 (部分开源 SDK)
+  scale: 头部网页抓取自动化平台, Actor 市场生态成熟
+  crawl_capability: 通用网页抓取 + 自动化; 支持 JS 渲染、代理、调度; 资源以 CU(内存×时长)计量
+  ai_integration: 偏抓取基础设施, 非内置 LLM; 可接外部模型处理抓取结果
+  plugin_mechanism: Apify Store(Actor 市场) — 第三方开发者上架抓取/自动化脚本, 用户安装运行
+  user_auth: 多用户 SaaS, 团队/组织管理
+  backend: Node.js 为主
+  plugin_runtime: 每个 Actor 运行在独立 Docker 容器; 内存 128MB–32GB, 按内存自动换算 CPU, 带总量上限
+  business_model: 订阅档位(Free/Starter $29/Scale $199/Business $999/Enterprise) + 按量 CU; 开发者 80% 分成, 平台抽 20%
+  deployment: 纯 SaaS 云
+  compliance: GDPR 信息页明确 controller/processor 分工; 主打 "responsible/legal scraping" 用户教育; 跨境用 SCC
+  sandbox_isolation: 容器级硬隔离 + 资源配额上限
+  monitoring_log: 运行日志/状态/进度可视化, 任务级监控
+  takeaway: ① "订阅+按量 CU/事件"双轨计费易解释; ② 开发者 80% 分成激励生态; ③ 容器级隔离+配额是可借鉴的插件沙箱范式; ④ 把"合法抓取"作卖点降低合规风险
+sources:
+  - https://apify.com/pricing
+  - https://docs.apify.com/actors/running/usage-and-resources
+  - https://docs.apify.com/academy/actor-marketing-playbook/store-basics/how-actor-monetization-works
+  - https://docs.apify.com/legal/gdpr-information

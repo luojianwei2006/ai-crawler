@@ -1,0 +1,14 @@
+item_id: B06
+name: Vue3 前后端分离 + 实时日志 (WebSocket / SSE)
+category: 技术架构参考
+fields:
+  frontend: Vue3 + Pinia; 单向日志流首选 SSE(EventSource), 自动重连零额外依赖; 仅当需前端反向控制(暂停/中止)再升级 WebSocket
+  backend: SSE 用 PHP flush() 持续推送 data:{...}\n\n; WebSocket 经 Ratchet/Swoole/laravel-websockets 广播到房间; Laravel 自身无内置 WS 服务
+  monitoring_log: 爬虫任务每产生一行日志 → 写数据库日志表 + 实时通道; 前端 EventSource('/api/logs/stream?task_id=xxx') 或 new WebSocket(...); Pinia 维护日志数组, 右侧面板 v-for 渲染, 区分 info/warn/error 与进度百分比; 任务结束发 event:done 关闭流
+  deployment: PHP-FPM + SSE 需注意缓冲/超时配置; WebSocket 需常驻进程(Swoole/Ratchet)
+  takeaway: 右侧日志面板用 SSE(EventSource)+Pinia 最轻量(单向日志流/自动重连); 后端每次日志写入同时落库+推流, 保证刷新后可回溯
+sources:
+  - https://juejin.cn/post/7519794949580898313
+  - https://cloud.tencent.com/developer/article/2526931
+  - https://blog.csdn.net/u011807844/article/details/134955120
+  - https://www.php.cn/faq/1557095.html

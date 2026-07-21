@@ -1,0 +1,37 @@
+# ---- PHP / Laravel (backend) ----
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/phpunit.xml
+backend/.phpunit.result.cache
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/storage/app/public/*
+!backend/storage/framework/cache/.gitignore
+!backend/storage/framework/sessions/.gitignore
+!backend/storage/framework/views/.gitignore
+!backend/storage/logs/.gitignore
+backend/bootstrap/cache/*.php
+
+# ---- Node / Vite (frontend) ----
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+frontend/*.local
+
+# ---- OS / Editor ----
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+*.swp
+
+# ---- Uploads / runtime artifacts (keep template.zip, ignore user uploads) ----
+backend/storage/app/plugins/*
+!backend/storage/app/plugins/.gitignore

@@ -1,0 +1,17 @@
+item_id: B02
+name: 插件系统架构 (钩子/事件/沙箱隔离)
+category: 技术架构参考
+fields:
+  backend: PHP (Laravel 推荐); Composer PSR-4 自动加载 + 插件 composer.json 声明 extra 钩子/权限/依赖
+  plugin_runtime: 钩子/事件总线; 但 PHP 无类加载器隔离(autoload 全局), 隔离必须靠分进程, 不能靠 autoload
+  dev_method: PluginManifest(钩子点 + 权限声明) + Bootstraper.boot() 向宿主注册钩子; 参考 WordPress Action/Filter、Laravel 包机制
+  publish_review: 上架需安全扫描 (静态检查危险函数/权限越界); 参考 WordPress PCP
+  extensibility: 事件/钩子总线解耦插件与核心; 核心埋点 onBeforeCrawl / onAfterParse / onError
+  sandbox_isolation: 插件在独立子进程执行 (php-sandbox / proc_open) + chroot + SELinux + disable_functions + 危险函数白名单 + escapeshellarg 封装; 插件 manifest 声明所需能力(网络/文件系统/命令执行), 宿主按租户授权
+  takeaway: 定义 PluginManifest(钩子点+权限声明), 宿主用事件/钩子总线解耦; 插件必须在独立子进程执行 + 权限白名单 + 禁用危险函数, 保证用户上传代码不拖垮主进程
+sources:
+  - https://www.cnblogs.com/52fhy/p/5819995.html
+  - https://www.dba.cn/book/wordpress/WORDPRESSKaiFaJiaoCheng/WORDPRESSChaJianKaiFaJiaoChengPART-3GouZiHOOKS.html
+  - https://github.com/AlizHarb/laravel-hooks
+  - https://github.com/paramientos/laravel-plugin-system
+  - https://www.php.cn/faq/2857716.html

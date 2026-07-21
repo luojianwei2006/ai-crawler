@@ -1,0 +1,16 @@
+item_id: B03
+name: PHP 网页爬虫 (Guzzle + DomCrawler + 无头浏览器)
+category: 技术架构参考
+fields:
+  backend: PHP; guzzlehttp/guzzle (HTTP 客户端, 带 Cookie/Header/代理) + symfony/dom-crawler (CSS 选择器/XPath 提取)
+  crawl_capability: 静态/服务端渲染页走 Guzzle+DomCrawler(可配合 Goutte 一行 request); JS 渲染页必须用 Symfony Panther(headless Chrome, W3C WebDriver, MIT, 下载超 1100 万次); 链接用 filter('a')->each(attr('href')) 抽取
+  plugin_runtime: 核心统一调度链接与"爬取深度"(队列 + BFS 去重/拼绝对 URL); 插件只负责"解析规则"而非"抓取引擎"; 无头浏览器资源消耗大, 仅 JS 重度页启用
+  extensibility: 解析规则以插件提供, 抓取引擎由核心复用
+  deployment: PHP 服务 + 可选外部 headless Chrome/ChromeDriver 服务
+  compliance: 伪造 UA/代理 IP 池/限速/遵守 robots.txt/处理 429 与重定向/Cookie 会话复用
+  takeaway: 默认 Guzzle+DomCrawler(Goutte); 当插件参数"爬取深度/目标站 JS 渲染"命中时切换 Panther(headless Chrome); 链接抽取与深度由核心统一调度(队列+BFS), 插件只写解析规则
+sources:
+  - https://zhuanlan.zhihu.com/p/415692152
+  - https://blog.csdn.net/xiangpanf/article/details/159291148
+  - https://github.com/symfony/panther
+  - https://symfony.com.cn/components/Panther
