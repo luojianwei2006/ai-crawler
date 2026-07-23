@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import http from '../api/client'
@@ -7,6 +7,27 @@ import http from '../api/client'
 const list = ref([])
 const result = ref(null)   // 测试按钮回显：{latency_ms, usage, error}
 const loading = ref(false)
+
+// 各供应商的模型列表（随版本更新可扩展）
+const VENDOR_MODELS = {
+  openai:   ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'],
+  glm:      ['glm-4-plus', 'glm-4', 'glm-4v', 'glm-4-flash', 'glm-4-air', 'glm-4-long'],
+  deepseek: ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner', 'deepseek-v2', 'deepseek-v2-coder'],
+}
+const VENDOR_ENDPOINTS = {
+  openai:   'https://api.openai.com/v1',
+  glm:      'https://open.bigmodel.cn/api/paas/v4',
+  deepseek: 'https://api.deepseek.com/v1',
+}
+
+// 当前供应商可选的模型列表
+const availableModels = computed(() => VENDOR_MODELS[form.value.vendor] ?? [])
+
+// 切换供应商时自动填充端点、清空模型
+function onVendorChange(vendor) {
+  form.value.base_url = VENDOR_ENDPOINTS[vendor] ?? ''
+  form.value.model = ''
+}
 
 async function load() {
   loading.value = true
@@ -30,7 +51,7 @@ const saving = ref(false)
 const form = ref({ name: '', vendor: 'openai', base_url: '', api_key: '', model: '' })
 
 function openCreate() {
-  form.value = { name: '', vendor: 'openai', base_url: '', api_key: '', model: '' }
+  form.value = { name: '', vendor: 'openai', base_url: VENDOR_ENDPOINTS.openai, api_key: '', model: '' }
   dialog.value = true
 }
 async function save() {
@@ -88,17 +109,19 @@ async function save() {
           <el-input v-model="form.name" placeholder="如 默认 GPT" />
         </el-form-item>
         <el-form-item label="供应商">
-          <el-select v-model="form.vendor">
-            <el-option label="openai" value="openai" />
-            <el-option label="glm" value="glm" />
-            <el-option label="deepseek" value="deepseek" />
+          <el-select v-model="form.vendor" @change="onVendorChange">
+            <el-option label="OpenAI" value="openai" />
+            <el-option label="智谱 GLM" value="glm" />
+            <el-option label="DeepSeek" value="deepseek" />
           </el-select>
         </el-form-item>
         <el-form-item label="端点">
           <el-input v-model="form.base_url" placeholder="https://api.openai.com/v1" />
         </el-form-item>
         <el-form-item label="模型">
-          <el-input v-model="form.model" placeholder="gpt-4o" />
+          <el-select v-model="form.model" placeholder="先选供应商" :disabled="!form.vendor">
+            <el-option v-for="m in availableModels" :key="m" :label="m" :value="m" />
+          </el-select>
         </el-form-item>
         <el-form-item label="API Key">
           <el-input v-model="form.api_key" type="password" show-password placeholder="后端以 AES-256 加密存储" />
