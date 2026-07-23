@@ -1,11 +1,16 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { SwitchButton } from '@element-plus/icons-vue'
 import http from './api/client'
 
 const router = useRouter()
 const route = useRoute()
+
+onMounted(() => {
+  const t = localStorage.getItem('token')
+  console.log('[APP] mounted', { path: route.path, name: route.name, has_token: !!t, token_preview: t ? t.substring(0, 25) + '…' : 'null' })
+})
 
 const activeIndex = computed(() => route.path.startsWith('/run') ? '/market' : route.path)
 const showChrome = computed(() => route.name !== 'login')

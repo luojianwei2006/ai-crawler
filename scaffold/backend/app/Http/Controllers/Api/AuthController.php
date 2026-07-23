@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Hash, Response};
+use Illuminate\Support\Facades\{Auth, Hash, Log, Response};
 
 /**
  * 账号：登录 / 改密 / 登出（PRD §4.1 / tasks M1）
@@ -18,12 +18,26 @@ class AuthController extends Controller
             'email'    => 'required|email',
             'password' => 'required|string',
         ]);
+
+        Log::info('[AUTH] login attempt', ['email' => $data['email']]);
+
         if (! Auth::attempt($data)) {
+            Log::info('[AUTH] Auth::attempt FAILED');
             return Response::json(['error' => 'invalid_credentials'], 401);
         }
+
         /** @var User $u */
         $u = Auth::user();
-        $token = $u->createToken('api')->plainTextToken;
+        Log::info('[AUTH] Auth::attempt OK', ['user_id' => $u->id, 'role' => $u->role]);
+
+        try {
+            $token = $u->createToken('api')->plainTextToken;
+        } catch (\Throwable $e) {
+            Log::error('[AUTH] createToken EXCEPTION: ' . $e->getMessage());
+            return Response::json(['error' => 'token_creation_failed'], 500);
+        }
+
+        Log::info('[AUTH] token created', ['prefix' => substr($token, 0, 30) . '…']);
         return Response::json(['token' => $token, 'role' => $u->role]);
     }
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\{
     UsersController
 };
 use App\Http\Middleware\Admin;
+use App\Http\Middleware\DebugAuth;
 
 /*
  * API 路由（对应 review §4.2 内部 MCP 风格接口；一期不对外暴露为 MCP Server）
@@ -19,7 +20,7 @@ use App\Http\Middleware\Admin;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([DebugAuth::class, 'auth:sanctum'])->group(function () {
 
     // 账号：改密 / 登出（PRD §4.1）
     Route::post('/password', [AuthController::class, 'changePassword']);
@@ -48,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'store', 'update', 'destroy']);
 
     // ---- 管理员专用（Admin 中间件闸门，见 app/Http/Middleware/Admin.php）----
-    Route::middleware(['auth:sanctum', Admin::class])
+    Route::middleware([DebugAuth::class, 'auth:sanctum', Admin::class])
         ->prefix('admin')->group(function () {
             Route::get('/plugins/pending', [PluginController::class, 'pending']);
             Route::post('/plugins/{plugin}/review', [PluginController::class, 'review']);
