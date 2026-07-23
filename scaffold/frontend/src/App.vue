@@ -23,6 +23,7 @@ function handleSelect(index) {
 
 async function logout() {
   try { await http.post('/logout') } catch (_) { /* 忽略 */ }
+  localStorage.removeItem('token')
   router.push('/login')
 }
 </script>

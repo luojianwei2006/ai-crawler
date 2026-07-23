@@ -2,7 +2,13 @@ import axios from 'axios'
 
 const http = axios.create({
   baseURL: '/api',
-  withCredentials: true,
+})
+
+// 注入 API Token（从 users.api_token 取）
+http.interceptors.request.use((cfg) => {
+  const t = localStorage.getItem('token')
+  if (t) cfg.headers.Authorization = `Bearer ${t}`
+  return cfg
 })
 
 // 统一错误：401 跳登录
@@ -10,6 +16,7 @@ http.interceptors.response.use(
   (r) => r,
   (err) => {
     if (err.response?.status === 401) {
+      localStorage.removeItem('token')
       location.href = '/login'
     }
     return Promise.reject(err)

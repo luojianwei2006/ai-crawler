@@ -11,7 +11,8 @@ const loading = ref(false)
 async function login() {
   loading.value = true
   try {
-    await http.post('/login', form.value)
+    const { data } = await http.post('/login', form.value)
+    localStorage.setItem('token', data.token)
     ElMessage.success('登录成功')
     router.push('/market')
   } catch (e) {

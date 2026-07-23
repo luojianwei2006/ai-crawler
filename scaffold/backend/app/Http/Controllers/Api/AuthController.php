@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Hash, Response};
 
 /**
- * 账号：登录 / 改密 / 登出（PRD §4.1 / tasks M1）
- * 使用 Sanctum SPA session 鉴权，不生成 Bearer Token。
+ * 账号：登录 / 改密 / 登出
+ * 使用极简 API Token（存 users.api_token），不依赖 Sanctum / Session。
  */
 class AuthController extends Controller
 {
@@ -26,8 +26,12 @@ class AuthController extends Controller
         /** @var User $u */
         $u = Auth::user();
 
-        // Session 已由 Auth::attempt 自动创建，客户端通过 Cookie 维持会话
-        return Response::json(['role' => $u->role]);
+        // 生成随机 token 存入 users.api_token
+        $token = bin2hex(random_bytes(32));
+        $u->api_token = $token;
+        $u->save();
+
+        return Response::json(['token' => $token, 'role' => $u->role]);
     }
 
     public function changePassword(Request $request)
@@ -47,9 +51,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        /** @var User $u */
+        $u = $request->user();
+        if ($u) {
+            $u->api_token = null;
+            $u->save();
+        }
         return Response::json(['ok' => true]);
     }
 }
