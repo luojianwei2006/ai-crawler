@@ -20,7 +20,31 @@ use App\Http\Middleware\DebugAuth;
 
 Route::post('/login', [AuthController::class, 'login']);
 
+// ---- 调试路由（上线前删除） ----
+Route::get('/_debug/ping', function () {
+    return response()->json([
+        'status'       => 'ok',
+        'php_version'  => PHP_VERSION,
+        'headers'      => [
+            'authorization'      => request()->header('Authorization'),
+            'bearer_token'       => request()->bearerToken(),
+            'content_type'       => request()->header('Content-Type'),
+            'cookie'             => substr(request()->header('Cookie') ?? '', 0, 80),
+        ],
+    ]);
+});
+
 Route::middleware([DebugAuth::class, 'auth:sanctum'])->group(function () {
+    // 调试：需要有效 Token
+    Route::get('/_debug/auth-ping', function () {
+        $u = request()->user();
+        return response()->json([
+            'authenticated' => ! is_null($u),
+            'user_id'       => $u?->id,
+            'user_email'    => $u?->email,
+            'bearer_received' => substr(request()->bearerToken() ?? '', 0, 40) . '…',
+        ]);
+    });
 
     // 账号：改密 / 登出（PRD §4.1）
     Route::post('/password', [AuthController::class, 'changePassword']);

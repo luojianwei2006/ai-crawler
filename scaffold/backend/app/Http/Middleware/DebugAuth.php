@@ -23,13 +23,19 @@ class DebugAuth
             'has_auth_header' => ! is_null($authHeader),
             'bearer_present'  => ! is_null($bearer),
             'bearer_preview'  => $bearer ? substr($bearer, 0, 35) . '…' : 'null',
+            'content_type'    => $request->header('Content-Type'),
             'cookie_preview'  => $cookie ? substr($cookie, 0, 80) . '…' : 'null',
         ]);
 
-        $response = $next($request);
+        try {
+            $response = $next($request);
+        } catch (\Throwable $e) {
+            Log::warning("[DEBUG-AUTH] {$prefix} THREW: " . $e::class . ' — ' . $e->getMessage());
+            throw $e;
+        }
 
         Log::info("[DEBUG-AUTH] {$prefix} → {$response->getStatusCode()}", [
-            'content_preview' => substr($response->getContent() ?: '', 0, 120),
+            'content_preview' => substr($response->getContent() ?: '', 0, 150),
         ]);
 
         return $response;
