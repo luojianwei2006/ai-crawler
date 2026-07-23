@@ -57,7 +57,7 @@
 
 ## 技术栈
 
-- **后端**：Laravel 11/12（PHP 8.2）+ MySQL 8
+- **后端**：Laravel 11（PHP 8.2）+ MySQL 8
 - **前端**：Vue 3 + Pinia + Vite + Axios（Sanctum）
 - **采集**：Guzzle + Symfony DomCrawler（静态）；Symfony Panther（headless Chrome，JS 渲染可选）
 - **模型**：OpenAI 兼容 `ChatAdapter`，统一对接 GLM / DeepSeek / GPT（仅 `base_url` + `model` 不同）
@@ -89,44 +89,28 @@ ai-crawler-plugin-platform/
 
 ### 本地研发
 
-> ⚠️ 重要：`scaffold/backend` 是**源码层**，只含业务代码（`app/` `database/` `routes/` `plugins/`）与 `composer.json`，**不含 Laravel 引导骨架**（`artisan` / `bootstrap/` / `public/index.php` / `config/`）。请先引导一个完整 Laravel 工程，再用本仓库代码覆盖；**不要**直接在 `scaffold/backend` 里 `composer install`。
+> `scaffold/backend` 已是**完整可运行的 Laravel 11 工程**（含 `artisan` / `bootstrap/` / `public/index.php` / `config/` / `routes/api.php` 等），克隆后直接安装依赖即可，无需再引导框架或手动覆盖文件。
 
-**后端（先引导 Laravel，再覆盖业务代码）**
+**后端（scaffold/backend 直接运行）**
 
 ```bash
-# 前置：PHP ≥ 8.2（含 mbstring/xml/curl/zip/mysql/sqlite/bcmath 等扩展）+ Composer + Node ≥ 18
+# 前置：PHP ≥ 8.2（需 mbstring / dom / xml / curl / zip / mysql / sqlite / bcmath 扩展）+ Composer + Node ≥ 18
 # 安装 Composer： https://getcomposer.org/download/   （macOS: brew install composer）
 
-# 1) 引导完整 Laravel 骨架（含 artisan / bootstrap / public / config / vendor）
-composer create-project laravel/laravel ai-crawler-backend
-cd ai-crawler-backend
-
-# 2) 加装本项目额外依赖（保留 Laravel 默认依赖）
-composer require guzzlehttp/guzzle symfony/dom-crawler symfony/panther \
-  openai-php/laravel spatie/laravel-permission laravel/sanctum
-
-# 3) 用仓库里的业务代码覆盖框架默认代码
-rm -rf app database routes plugins
-cp -r ../ai-crawler/scaffold/backend/app .
-cp -r ../ai-crawler/scaffold/backend/database .
-cp -r ../ai-crawler/scaffold/backend/routes .
-cp -r ../ai-crawler/scaffold/backend/plugins .
-cp ../ai-crawler/scaffold/backend/.env.example .
-mkdir -p public/dev && cp -r ../ai-crawler/scaffold/backend/public/* public/dev/ 2>/dev/null
-
-# 4) 初始化并启动
+cd scaffold/backend
+composer install                      # 内置 composer.lock，按锁定版本可复现安装
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed        # 种子：admin@example.com / admin123 + 示例插件 + 模型
-php artisan serve --port=8000      # 后端 http://localhost:8000
+php artisan migrate --seed           # 建表 + 种子：admin@example.com / admin123 + 示例插件 + 模型
+php artisan serve --port=8000        # 后端 http://localhost:8000
 ```
 
-> `../ai-crawler` 假设仓库 clone 在与 `ai-crawler-backend` 同级、名为 `ai-crawler` 的目录；路径不同请相应修改。
+> 安全公告说明：Laravel 11.x 在部分 Composer 版本会触发安全公告拦截导致 `composer install` 失败。仓库 `composer.json` 已设置 `policy.advisories.block=false` 并忽略已知公告 ID；个别发行版 Composer 不读取该配置时，可临时执行 `composer config -g policy.advisories.block false` 再安装。
 
 **前端**
 
 ```bash
-cd ai-crawler/scaffold/frontend
+cd scaffold/frontend
 npm install
 npm run dev                         # http://localhost:5173（代理 /api → 8000）
 ```
@@ -169,7 +153,7 @@ docker compose up --build        # 启动 app(PHP 8.2-fpm) + mysql
 - **子进程隔离**：`proc_open` 派生独立进程，禁用危险函数，仅开放白名单钩子。
 - **超时 killer**：`stream_select` 循环监听 + `proc_terminate`，防止插件卡死占用资源。
 - **崩溃隔离**：子进程异常退出不拖垮主进程，错误写入 `task_logs`。
-- **敏感数据**：密码与 Cookie 经 Laravel `Crypt`（AES-256）加密存储。
+- **敏感数据**：登录密码经 **bcrypt** 哈希存储（`password_enc`）；API Key 与 Cookie 经 Laravel `Crypt`（AES-256）加密存储。
 - **合规**：尊重目标站点 `robots.txt`；可通过 `COMPLIANCE_*` 环境变量统一开关。
 
 ## 文档索引

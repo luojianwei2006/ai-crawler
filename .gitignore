@@ -1,28 +1,24 @@
-# ---- PHP / Laravel (backend) ----
-backend/vendor/
-backend/node_modules/
-backend/.env
-backend/.env.backup
-backend/phpunit.xml
-backend/.phpunit.result.cache
-backend/storage/*.key
-backend/storage/framework/cache/data/*
-backend/storage/framework/sessions/*
-backend/storage/framework/views/*
-backend/storage/logs/*
-backend/storage/app/public/*
-!backend/storage/framework/cache/.gitignore
-!backend/storage/framework/sessions/.gitignore
-!backend/storage/framework/views/.gitignore
-!backend/storage/logs/.gitignore
-backend/bootstrap/cache/*.php
+# ---- PHP / Laravel (scaffold/backend) ----
+scaffold/backend/vendor/
+scaffold/backend/node_modules/
+scaffold/backend/.env
+scaffold/backend/.env.backup
+scaffold/backend/.env.production
+scaffold/backend/phpunit.xml
+scaffold/backend/.phpunit.result.cache
+scaffold/backend/storage/*.key
+scaffold/backend/storage/pail
+scaffold/backend/bootstrap/cache/*.php
+scaffold/backend/public/build
+scaffold/backend/public/hot
+scaffold/backend/public/storage
 
-# ---- Node / Vite (frontend) ----
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-frontend/.env.*
-frontend/*.local
+# ---- Node / Vite (scaffold/frontend) ----
+scaffold/frontend/node_modules/
+scaffold/frontend/dist/
+scaffold/frontend/.env
+scaffold/frontend/.env.*
+scaffold/frontend/*.local
 
 # ---- OS / Editor ----
 .DS_Store
@@ -33,5 +29,5 @@ Thumbs.db
 *.swp
 
 # ---- Uploads / runtime artifacts (keep template.zip, ignore user uploads) ----
-backend/storage/app/plugins/*
-!backend/storage/app/plugins/.gitignore
+scaffold/backend/storage/app/plugins/*
+!scaffold/backend/storage/app/plugins/.gitignore

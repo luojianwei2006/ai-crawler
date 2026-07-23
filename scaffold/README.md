@@ -2,12 +2,12 @@
 
 > 配套文档：`../report.md`（调研）、`../PRD.md`（v0.1）、`../review.md`、`../tasks.md`、`../testcases.md`、`../retrospective.md`、`../action-items.md`
 > 一期边界（已确认）：开发者为主 · 私有化自托管 · 独立子进程 · 单机单租户+手动运行 · 内部 MCP 风格 · 免抽成
-> 状态：M0–M10 全部完成（源码层，含 Docker 部署镜像）。工程总览见顶层 `README.md`，模块完成度见下方矩阵。
+> 状态：M0–M10 全部完成。`scaffold/backend` 已是**完整可运行的 Laravel 11 工程**（含 `artisan` / `bootstrap/` / `config/` / `public/` / `tests/`），clone 后 `composer install` 即可起。工程总览见顶层 `README.md`，模块完成度见下方矩阵。
 
 ## 架构
 
 ```
-后端  Laravel 11/12 (PHP 8.2)  ── 插件子进程沙箱(proc_open + 禁用函数 + 白名单)
+后端  Laravel 11 (PHP 8.2)     ── 插件子进程沙箱(proc_open + 禁用函数 + 白名单)
 前端  Vue3 + Pinia + Vite     ── 运行页双栏(左参数 / 右 SSE 日志)
 数据  MySQL 8                ── 8 张核心表(users/model_providers/plugins/
                                           user_plugins/crawl_tasks/task_logs/cookies/ai_skills)

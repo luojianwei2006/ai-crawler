@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password_enc');          // AES-256 密文，禁止明文
+            $table->string('password_enc');          // bcrypt 哈希（AuthController / DatabaseSeeder 统一用 Hash::make）
             $table->string('role')->default('user'); // admin | user | developer
             $table->unsignedBigInteger('tenant_id')->nullable(); // 一期单租户，预留
             $table->string('status')->default('active');   // active | disabled
