@@ -1,5 +1,8 @@
 <?php
 
+// PHP 8.5 对 PDO::MYSQL_ATTR_SSL_CA 常量报弃用（Laravel 尚未适配），暂时压制避免污染响应
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

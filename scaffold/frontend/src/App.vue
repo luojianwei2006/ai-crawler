@@ -1,16 +1,11 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { SwitchButton } from '@element-plus/icons-vue'
 import http from './api/client'
 
 const router = useRouter()
 const route = useRoute()
-
-// Sanctum SPA 鉴权：启动时获取 CSRF Cookie（确保后续 POST 请求不报 419）
-onMounted(async () => {
-  try { await http.get('/sanctum/csrf-cookie') } catch (_) { /* 忽略 */ }
-})
 
 const activeIndex = computed(() => route.path.startsWith('/run') ? '/market' : route.path)
 const showChrome = computed(() => route.name !== 'login')
