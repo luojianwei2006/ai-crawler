@@ -1,41 +1,57 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { SwitchButton } from '@element-plus/icons-vue'
 import http from './api/client'
 
 const router = useRouter()
 const route = useRoute()
 
+const activeIndex = computed(() => route.path.startsWith('/run') ? '/market' : route.path)
+const showChrome = computed(() => route.name !== 'login')
+
 const nav = [
-  { to: '/market', label: '插件市场' },
-  { to: '/my', label: '我的插件' },
-  { to: '/models', label: '模型管理' },
-  { to: '/dev', label: '插件开发' },
+  { index: '/market', label: '插件市场' },
+  { index: '/my', label: '我的插件' },
+  { index: '/models', label: '模型管理' },
+  { index: '/dev', label: '插件开发' },
 ]
 
+function handleSelect(index) {
+  router.push(index)
+}
+
 async function logout() {
-  await http.post('/logout')
+  try { await http.post('/logout') } catch (_) { /* 忽略 */ }
   localStorage.removeItem('token')
   router.push('/login')
 }
 </script>
 
 <template>
-  <div class="layout">
-    <header v-if="route.name !== 'login'">
-      <strong>AI 采集插件平台</strong>
-      <nav>
-        <router-link v-for="n in nav" :key="n.to" :to="n.to">{{ n.label }}</router-link>
-      </nav>
-      <button @click="logout">退出</button>
-    </header>
-    <main>
+  <el-container v-if="showChrome" class="layout">
+    <el-header class="header">
+      <div class="brand">AI 采集插件平台</div>
+      <el-menu :default-active="activeIndex" mode="horizontal" class="nav" @select="handleSelect">
+        <el-menu-item v-for="n in nav" :key="n.index" :index="n.index">{{ n.label }}</el-menu-item>
+      </el-menu>
+      <el-button text type="primary" :icon="SwitchButton" @click="logout">退出</el-button>
+    </el-header>
+    <el-main class="main">
       <router-view />
-    </main>
-  </div>
+    </el-main>
+  </el-container>
+  <router-view v-else />
 </template>
 
 <style>
-.layout { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; }
-header { display: flex; align-items: center; gap: 16px; padding: 12px; border-bottom: 1px solid #eee; }
-nav { display: flex; gap: 12px; flex: 1; }
+html, body, #app { height: 100%; margin: 0; }
+.layout { min-height: 100vh; }
+.header {
+  display: flex; align-items: center; gap: 24px;
+  background: #fff; border-bottom: 1px solid var(--el-border-color-light);
+}
+.brand { font-weight: 700; font-size: 16px; color: var(--el-color-primary); white-space: nowrap; }
+.nav { flex: 1; border-bottom: none; }
+.main { background: var(--el-bg-color-page); padding: 24px; }
 </style>
