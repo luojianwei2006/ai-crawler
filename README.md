@@ -87,28 +87,51 @@ ai-crawler-plugin-platform/
 
 ## 快速开始
 
-### 本地研发（推荐先用 sync 队列，零依赖）
+### 本地研发
+
+> ⚠️ 重要：`scaffold/backend` 是**源码层**，只含业务代码（`app/` `database/` `routes/` `plugins/`）与 `composer.json`，**不含 Laravel 引导骨架**（`artisan` / `bootstrap/` / `public/index.php` / `config/`）。请先引导一个完整 Laravel 工程，再用本仓库代码覆盖；**不要**直接在 `scaffold/backend` 里 `composer install`。
+
+**后端（先引导 Laravel，再覆盖业务代码）**
 
 ```bash
-# 1) 后端
-cd scaffold/backend
+# 前置：PHP ≥ 8.2（含 mbstring/xml/curl/zip/mysql/sqlite/bcmath 等扩展）+ Composer + Node ≥ 18
+# 安装 Composer： https://getcomposer.org/download/   （macOS: brew install composer）
+
+# 1) 引导完整 Laravel 骨架（含 artisan / bootstrap / public / config / vendor）
+composer create-project laravel/laravel ai-crawler-backend
+cd ai-crawler-backend
+
+# 2) 加装本项目额外依赖（保留 Laravel 默认依赖）
+composer require guzzlehttp/guzzle symfony/dom-crawler symfony/panther \
+  openai-php/laravel spatie/laravel-permission laravel/sanctum
+
+# 3) 用仓库里的业务代码覆盖框架默认代码
+rm -rf app database routes plugins
+cp -r ../ai-crawler/scaffold/backend/app .
+cp -r ../ai-crawler/scaffold/backend/database .
+cp -r ../ai-crawler/scaffold/backend/routes .
+cp -r ../ai-crawler/scaffold/backend/plugins .
+cp ../ai-crawler/scaffold/backend/.env.example .
+mkdir -p public/dev && cp -r ../ai-crawler/scaffold/backend/public/* public/dev/ 2>/dev/null
+
+# 4) 初始化并启动
 cp .env.example .env
-composer install                 # 需本地先 composer create-project laravel/laravel 引导
 php artisan key:generate
-php artisan migrate --seed       # 种子：admin@example.com / admin123 + 示例插件 + 模型
-php artisan serve --port=8000
-
-# 2) 前端（另开终端）
-cd scaffold/frontend
-npm install
-npm run dev                      # http://localhost:5173（代理 /api → 8000）
-
-# 3) 运行一个采集任务
-#    浏览器打开前端 → Market 安装 example 插件 → MyPlugins 填参数 → RunView 点运行
-#    右侧 SSE 日志面板实时回显；AI 抽取需先在 Models 配置可用模型
+php artisan migrate --seed        # 种子：admin@example.com / admin123 + 示例插件 + 模型
+php artisan serve --port=8000      # 后端 http://localhost:8000
 ```
 
-> 说明：本仓库为**源码层**。`scaffold/backend` 不含完整 Laravel 引导骨架（如 `bootstrap/app.php`、默认 `public/index.php` 等已由关键文件替代），首次本地运行建议基于 `composer create-project laravel/laravel` 引导后用本仓库文件覆盖，或按 `composer.json` 依赖补齐。详见 `scaffold/README.md`。
+> `../ai-crawler` 假设仓库 clone 在与 `ai-crawler-backend` 同级、名为 `ai-crawler` 的目录；路径不同请相应修改。
+
+**前端**
+
+```bash
+cd ai-crawler/scaffold/frontend
+npm install
+npm run dev                         # http://localhost:5173（代理 /api → 8000）
+```
+
+**跑一次采集**：浏览器开前端 → Market 安装 example 插件 → MyPlugins 填参数 → RunView 点运行；右侧 SSE 日志实时回显（AI 抽取需先在 Models 配可用模型）。
 
 ### Docker 私有化一键起
 

@@ -40,18 +40,20 @@ scaffold/
     └── docker-compose.yml    # app + mysql，env 注入沙箱/合规配置
 ```
 
-## 快速起（研发视角，详见 action-items.md M0）
+## 快速起（研发视角）
+
+> 本目录是**源码层**，缺 Laravel 引导骨架（`artisan` / `bootstrap/` / `public/index.php` / `config/`），**不能**直接 `composer install` 后运行。
+> 完整、可直接复制的本地启动步骤（先 `create-project` 引导 Laravel，再覆盖本目录业务代码）见**顶层 `README.md` 的「快速开始」**。
 
 ```bash
-# 后端
-cd backend && cp .env.example .env && composer install
-php artisan key:generate && php artisan migrate
+# 1) 按顶层 README 引导完整 Laravel 工程并覆盖本目录业务代码后，再执行：
+php artisan key:generate && php artisan migrate --seed
 php artisan serve --port=8000
 
-# 前端
+# 2) 前端
 cd frontend && npm install && npm run dev   # http://localhost:5173 (代理 /api → 8000)
 
-# 私有化一键起
+# 3) 私有化一键起
 docker compose -f infra/docker-compose.yml up --build
 ```
 
