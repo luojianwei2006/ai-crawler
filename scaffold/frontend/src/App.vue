@@ -7,9 +7,9 @@ import http from './api/client'
 const router = useRouter()
 const route = useRoute()
 
-onMounted(() => {
-  const t = localStorage.getItem('token')
-  console.log('[APP] mounted', { path: route.path, name: route.name, has_token: !!t, token_preview: t ? t.substring(0, 25) + '…' : 'null' })
+// Sanctum SPA 鉴权：启动时获取 CSRF Cookie（确保后续 POST 请求不报 419）
+onMounted(async () => {
+  try { await http.get('/sanctum/csrf-cookie') } catch (_) { /* 忽略 */ }
 })
 
 const activeIndex = computed(() => route.path.startsWith('/run') ? '/market' : route.path)
@@ -28,7 +28,6 @@ function handleSelect(index) {
 
 async function logout() {
   try { await http.post('/logout') } catch (_) { /* 忽略 */ }
-  localStorage.removeItem('token')
   router.push('/login')
 }
 </script>

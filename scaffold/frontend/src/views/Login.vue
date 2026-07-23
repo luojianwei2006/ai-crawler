@@ -11,14 +11,10 @@ const loading = ref(false)
 async function login() {
   loading.value = true
   try {
-    const { data } = await http.post('/login', form.value)
-    console.log('[LOGIN] token received:', data.token ? data.token.substring(0, 30) + '…' : 'MISSING', 'role:', data.role)
-    localStorage.setItem('token', data.token)
-    console.log('[LOGIN] stored in localStorage, navigating to /market')
+    await http.post('/login', form.value)
     ElMessage.success('登录成功')
     router.push('/market')
   } catch (e) {
-    console.warn('[LOGIN] failed:', e.response?.data || e.message)
     ElMessage.error(e.response?.data?.error || '登录失败')
   } finally {
     loading.value = false
