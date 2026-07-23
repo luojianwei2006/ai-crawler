@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const http = axios.create({
   baseURL: '/api',
-  withCredentials: true,
 })
 
 // 注入 Sanctum Bearer Token
