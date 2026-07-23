@@ -8,7 +8,7 @@
 
 ```
 后端  Laravel 11 (PHP 8.2)     ── 插件子进程沙箱(proc_open + 禁用函数 + 白名单)
-前端  Vue3 + Pinia + Vite     ── 运行页双栏(左参数 / 右 SSE 日志)
+前端  Vue3 + Pinia + Vite + Element Plus ── 运行页双栏(左参数 / 右 SSE 日志)
 数据  MySQL 8                ── 8 张核心表(users/model_providers/plugins/
                                           user_plugins/crawl_tasks/task_logs/cookies/ai_skills)
 采集  Guzzle + DomCrawler    ── 静态页；JS 渲染可选 Panther(headless Chrome, T3)

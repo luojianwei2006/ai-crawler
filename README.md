@@ -58,7 +58,7 @@
 ## 技术栈
 
 - **后端**：Laravel 11（PHP 8.2）+ MySQL 8
-- **前端**：Vue 3 + Pinia + Vite + Axios（Sanctum）
+- **前端**：Vue 3 + Pinia + Vite + Axios（Sanctum）+ Element Plus（UI 组件库）
 - **采集**：Guzzle + Symfony DomCrawler（静态）；Symfony Panther（headless Chrome，JS 渲染可选）
 - **模型**：OpenAI 兼容 `ChatAdapter`，统一对接 GLM / DeepSeek / GPT（仅 `base_url` + `model` 不同）
 - **实时**：SSE（原生 `EventSource`），一期单向；反向控制二期升 WebSocket
